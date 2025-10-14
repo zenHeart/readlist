@@ -1,16 +1,6 @@
-export function renderPage(site, page) {
-  return layout(site, page.meta.title, article(site, page));
-}
-
-export function renderList(site, title, list) {
-  return layout(site, title, ul(list));
-}
-
-export function renderHome(site, recent) {
-  const hero = heroSection(site);
-  // 首页：展示可配置的 Hero + 时间线（不显示标题）
-  return layout(site, site.title, `${hero}${ul(recent)}`);
-}
+export { renderHome } from './pages/Home.js';
+export { renderList } from './pages/List.js';
+export { renderPage } from './pages/Page.js';
 
 function layout(site, title, body) {
   const nav = Array.isArray(site.nav) ? site.nav.map(n => `<a href="${n.link}" class="hover:text-blue-600 transition-colors duration-300">${escapeHtml(n.text)}</a>`).join(' ') : '';

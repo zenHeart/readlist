@@ -5,7 +5,8 @@ import { Timeline } from '../components/Timeline';
 
 export function renderHome(site: SiteData, recent: RouteMeta[]): string {
   const body = `${Hero(site)}${Timeline(recent, site.base || '')}`;
-  return Layout(site, site.title, body);
+  const siteWithActive = { ...(site as any), activeLink: '/' } as SiteData & { activeLink: string };
+  return Layout(siteWithActive as any, site.title, body);
 }
 
 

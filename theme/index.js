@@ -40,7 +40,6 @@ function layout(site, title, body) {
         <nav class="flex space-x-4 md:space-x-6 text-gray-600">${nav}</nav>
       </header>
       ${body}
-      <footer class="mt-12"><hr class="my-6"><div class="meta">由 Vite 自定义构建生成</div></footer>
     </div>
   </body>
 </html>`;

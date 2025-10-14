@@ -60,8 +60,15 @@ export default function readlist(opts: {
       const site = siteConfigModule.default ?? siteConfigModule;
       const base = (process.env.VITE_BASE_URL || '/').replace(/\/+$/, '');
 
-      // 读取主题渲染器（JS）
-      const theme = await import(path.resolve(cwd, 'theme/index.js'));
+      // 读取主题渲染器，优先加载 TS（通过 jiti）
+      let theme: any;
+      try {
+        theme = await import(path.resolve(cwd, 'theme/index.js'));
+      } catch {
+        const { default: createJiti } = await import('jiti');
+        const jiti = createJiti(__filename, { interopDefault: true, esmResolve: true });
+        theme = jiti(path.resolve(cwd, 'theme/index.ts'));
+      }
 
       const items: Array<PageData> = [];
 

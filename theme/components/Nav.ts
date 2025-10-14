@@ -1,6 +1,6 @@
-import { escapeHtml } from '../utils.js';
+import { escapeHtml } from '../utils';
 
-export function Nav(items, base = '') {
+export function Nav(items: Array<{ text: string; link: string }> | undefined, base = ''): string {
   const links = Array.isArray(items)
     ? items.map(n => `<a href="${base}${n.link}" class="hover:text-blue-600 transition-colors duration-300">${escapeHtml(n.text)}</a>`).join(' ')
     : '';

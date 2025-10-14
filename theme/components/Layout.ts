@@ -1,7 +1,8 @@
-import { escapeHtml } from '../utils.js';
-import { Header } from './Header.js';
+import type { SiteData } from '../../types/index';
+import { escapeHtml } from '../utils';
+import { Header } from './Header';
 
-export function Layout(site, title, body) {
+export function Layout(site: SiteData, title: string, body: string): string {
   return `<!doctype html>
 <html lang="zh-CN">
   <head>

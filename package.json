@@ -10,6 +10,7 @@
   "devDependencies": {
     "vite": "^7.1.9",
     "typescript": "^5.9.3",
+    "jiti": "^2.4.2",
     "gray-matter": "^4.0.3",
     "fast-glob": "^3.3.2",
     "unified": "^11.0.5",

@@ -1,6 +1,7 @@
-import { TimelineItem } from './TimelineItem.js';
+import { TimelineItem } from './TimelineItem';
+import type { RouteMeta } from '../../types';
 
-export function Timeline(list, base = '') {
+export function Timeline(list: RouteMeta[], base = ''): string {
   const li = (list || []).map(it => TimelineItem(it, base)).join('');
   return `
   <main>

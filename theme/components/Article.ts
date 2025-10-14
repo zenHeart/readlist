@@ -7,7 +7,7 @@ export function Article(page: PageData): string {
   const tags = Tags(page.meta?.tags);
   const rating = (page as any).meta?.rating ? `<span class="tag">评分 ${(page as any).meta.rating}</span>` : '';
   return `
-  <article class="bg-white p-6 md:p-10 rounded-xl shadow-lg">
+  <article class="bg-white p-6 md:p-10 rounded-xl shadow-lg overflow-hidden">
     <h1 class="text-3xl md:text-4xl font-bold mb-3">${escapeHtml(page.meta?.title)}</h1>
     <div class="meta mb-4">${escapeHtml(date)} ${tags} ${rating}</div>
     <div class="prose max-w-none">${page.html}</div>

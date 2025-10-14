@@ -22,6 +22,14 @@ export function Layout(site: SiteData, title: string, body: string): string {
       @media (max-width:768px){.timeline-line{left:12px}}
       .no-scrollbar::-webkit-scrollbar{display:none}
       .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+      /* Detail content overflow safety */
+      .prose{line-height:1.75;word-break:break-word;overflow-wrap:anywhere}
+      .prose p,.prose li{margin:0.5rem 0}
+      .prose img,.prose video{max-width:100%;height:auto;display:block;border-radius:8px}
+      .prose table{width:100%;border-collapse:collapse;display:block;overflow-x:auto}
+      .prose pre{background:#f8fafc;border-radius:8px;padding:12px;overflow:auto;white-space:pre}
+      .prose code{white-space:pre-wrap;word-break:break-word}
+      .prose blockquote{border-left:4px solid #e5e7eb;padding-left:12px;margin:12px 0;color:#374151}
     </style>
   </head>
   <body class="text-gray-800">

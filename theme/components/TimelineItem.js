@@ -1,7 +1,7 @@
 import { escapeHtml, toDateString } from '../utils.js';
 import { Tags } from './Tags.js';
 
-export function TimelineItem(it) {
+export function TimelineItem(it, base = '') {
   const date = toDateString(it.date);
   const tags = Tags(it.tags);
   const iconBg = it.type === 'book' ? 'bg-blue-500' : it.type === 'movie' ? 'bg-red-500' : 'bg-emerald-500';
@@ -13,7 +13,7 @@ export function TimelineItem(it) {
     <div class="absolute -left-4 top-1 w-8 h-8 rounded-full ${iconBg} flex items-center justify-center ring-8 ring-white">${icon}</div>
     <div class="bg-white p-6 rounded-xl shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
       <p class="text-sm text-gray-500 mb-1">${escapeHtml(date)}</p>
-      <h3 class="text-xl font-bold mb-2"><a class="hover:text-blue-600" href="${it.path}">${escapeHtml(it.title)}</a></h3>
+      <h3 class="text-xl font-bold mb-2"><a class="hover:text-blue-600" href="${base}${it.path}">${escapeHtml(it.title)}</a></h3>
       <div class="meta">${tags}</div>
     </div>
   </li>`;

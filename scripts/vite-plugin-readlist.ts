@@ -58,6 +58,7 @@ export default function readlist(opts: {
       // 读取站点配置（JS）
       const siteConfigModule = await import(path.resolve(cwd, opts.siteConfigPath));
       const site = siteConfigModule.default ?? siteConfigModule;
+      const base = (process.env.VITE_BASE_URL || '/').replace(/\/+$/, '');
 
       // 读取主题渲染器（JS）
       const theme = await import(path.resolve(cwd, 'theme/index.js'));
@@ -100,7 +101,7 @@ export default function readlist(opts: {
       // 输出单页（使用 posix 路径并避免前导斜杠）
       for (const it of items) {
         const fileName = path.posix.join(opts.typePaths[it.meta.type], it.meta.slug, 'index.html');
-        const html = theme.renderPage(site, it);
+        const html = theme.renderPage({ ...site, base }, it);
         this.emitFile({ type: 'asset', fileName, source: html });
       }
 
@@ -108,14 +109,14 @@ export default function readlist(opts: {
       const byType: Record<ItemType, Array<RouteMeta>> = { book: [], movie: [], tv: [] };
       for (const it of items) byType[it.meta.type].push(it.meta);
       (Object.keys(byType) as ItemType[]).forEach((t) => {
-        const html = theme.renderList(site, typeTitle(t), byType[t]);
+        const html = theme.renderList({ ...site, base }, typeTitle(t), byType[t]);
         const fileName = path.posix.join(opts.typePaths[t], 'index.html');
         this.emitFile({ type: 'asset', fileName, source: html });
       });
 
       // 输出首页
       const recent = items.slice(0, recentCount).map((i) => i.meta);
-      const homeHtml = theme.renderHome(site, recent);
+      const homeHtml = theme.renderHome({ ...site, base }, recent);
       this.emitFile({ type: 'asset', fileName: 'index.html', source: homeHtml });
     },
   };

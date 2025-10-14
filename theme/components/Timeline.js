@@ -1,7 +1,7 @@
 import { TimelineItem } from './TimelineItem.js';
 
-export function Timeline(list) {
-  const li = (list || []).map(TimelineItem).join('');
+export function Timeline(list, base = '') {
+  const li = (list || []).map(it => TimelineItem(it, base)).join('');
   return `
   <main>
     <div class="relative">

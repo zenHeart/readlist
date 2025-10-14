@@ -18,7 +18,7 @@ export function Nav(
         })
         .join(' ')
     : '';
-  return `<nav class="flex space-x-4 md:space-x-6">${links}</nav>`;
+  return `<nav class="flex space-x-3 md:space-x-6 text-sm md:text-base overflow-x-auto no-scrollbar">${links}</nav>`;
 }
 
 

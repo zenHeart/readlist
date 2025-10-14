@@ -20,6 +20,8 @@ export function Layout(site: SiteData, title: string, body: string): string {
       .tag{display:inline-block;background:#f2f2f2;padding:2px 6px;border-radius:6px;margin-right:6px;font-size:12px}
       .timeline-line{position:absolute;left:20px;top:20px;bottom:20px;width:2px;background-color:#e5e7eb;z-index:-1}
       @media (max-width:768px){.timeline-line{left:12px}}
+      .no-scrollbar::-webkit-scrollbar{display:none}
+      .no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
     </style>
   </head>
   <body class="text-gray-800">

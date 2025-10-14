@@ -11,11 +11,11 @@ export function TimelineItem(it: RouteMeta, base = ''): string {
   const tvIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" viewBox="0 0 1024 1024" width="24" height="24"><path d="M960 1024H64a65.792 65.792 0 0 1-64-65.984V256a64 64 0 0 1 64-64h336L256 0h128l128 170.624L640 0h128L624 192H960a64 64 0 0 1 64 64v702.016A65.728 65.728 0 0 1 960 1024zM766.016 352a32 32 0 0 0-32-32H160a32 32 0 0 0-32 32v512a32 32 0 0 0 32 32h574.016a32 32 0 0 0 32-32v-512zM960 384h-128v128h128V384z m0 256h-128v128h128v-128z" fill="currentColor"></path></svg>`;
   const icon = it.type === 'book' ? bookIcon : it.type === 'movie' ? movieIcon : tvIcon;
   return `
-  <li class="timeline-item mb-10 ml-4 md:ml-10 pl-8 md:pl-12 relative group">
-    <div class="absolute left-[-32px] md:left-[-36px] top-1 w-8 h-8 rounded-full ${iconBg} flex items-center justify-center ring-8 ring-white translate-y-1/2">${icon}</div>
-    <div class="bg-white p-6 rounded-xl shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
+  <li class="timeline-item mb-8 md:mb-10 ml-0 md:ml-10 pl-10 md:pl-12 relative group">
+    <div class="absolute left-[-24px] md:left-[-36px] top-1 w-8 h-8 rounded-full ${iconBg} flex items-center justify-center ring-8 ring-white translate-y-1/2">${icon}</div>
+    <div class="bg-white p-4 md:p-6 rounded-xl shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
       <p class="text-sm text-gray-500 mb-1">${escapeHtml(date)}</p>
-      <h3 class="text-xl font-bold mb-2"><a class="hover:text-blue-600" href="${base}${it.path}">${escapeHtml(it.title)}</a></h3>
+      <h3 class="text-lg md:text-xl font-bold mb-2"><a class="hover:text-blue-600" href="${base}${it.path}">${escapeHtml(it.title)}</a></h3>
       <div class="meta">${tags}</div>
     </div>
   </li>`;

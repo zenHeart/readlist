@@ -69,22 +69,27 @@ export default function readlist(opts: {
         const { data, content } = matter(raw);
         const fm = data as Partial<FrontMatter>;
 
-        if (!fm?.type || !fm?.title || !fm?.date) {
-          // 跳过未补齐 front matter 的条目
-          continue;
-        }
+        if (!fm?.type) continue; // 仅要求 type，title/date 从文件名推导
 
-        const slug = (fm.slug ?? slugify(path.basename(abs, path.extname(abs))));
+        const base = path.basename(abs, path.extname(abs));
+        const { titleFromName, dateFromName } = parseFromFilename(base);
+
+        const slug = (fm.slug ?? slugify(titleFromName || base));
         const html = await renderMarkdown(content);
-        const date = normalizeDate(fm.date as any);
+        const date = normalizeDate((fm.date as any) ?? dateFromName);
+        const title = (fm.title as any) ?? titleFromName ?? base;
         const routePath = `/${opts.typePaths[fm.type]}/${slug}/`;
+        const tags = Array.isArray(fm.tags)
+          ? fm.tags
+          : (typeof (fm as any).tags === 'string' && (fm as any).tags.trim() ? [(fm as any).tags] : []);
+
         const meta: RouteMeta = {
           path: routePath,
           type: fm.type,
-          title: fm.title,
+          title,
           date,
           slug,
-          tags: fm.tags ?? []
+          tags
         };
         items.push({ meta, html });
       }
@@ -160,6 +165,20 @@ function normalizeDate(input: string | Date): string {
     }
   } catch {}
   return String(input);
+}
+
+function parseFromFilename(base: string): { titleFromName: string; dateFromName: string } {
+  // 形如 YYYY-MM-DD_标题 或 YYYY-MM-DD-标题
+  const m = base.match(/^(\d{4}-\d{2}-\d{2})[\-_](.+)$/);
+  if (m) {
+    const date = m[1];
+    const rawTitle = m[2];
+    // 恢复原始中文标题（保留大小写与空格/下划线转空格）
+    const title = rawTitle.replace(/[\-_]+/g, ' ').trim();
+    return { titleFromName: title, dateFromName: date };
+  }
+  // Fallback：无法解析日期
+  return { titleFromName: base, dateFromName: '' };
 }
 
 

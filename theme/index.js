@@ -7,7 +7,9 @@ export function renderList(site, title, list) {
 }
 
 export function renderHome(site, recent) {
-  return layout(site, site.title, ul(recent, '最新内容'));
+  const hero = heroSection(site);
+  // 首页：展示可配置的 Hero + 时间线（不显示标题）
+  return layout(site, site.title, `${hero}${ul(recent)}`);
 }
 
 function layout(site, title, body) {
@@ -44,8 +46,18 @@ function layout(site, title, body) {
 </html>`;
 }
 
+function heroSection(site){
+  const title = site?.hero?.title ?? '记录每一次思想的旅行';
+  const desc = site?.hero?.description ?? (site?.description || '');
+  return `<section class="text-center bg-white p-6 md:p-10 rounded-xl shadow-sm mb-12">
+    <h2 class="text-xl md:text-2xl font-semibold mb-3">${escapeHtml(title)}</h2>
+    <p class="text-gray-500 max-w-2xl mx-auto">${escapeHtml(desc)}</p>
+  </section>`;
+}
+
 function ul(list, title){
-  const header = title ? `<section class="text-center bg-white p-6 md:p-10 rounded-xl shadow-sm mb-12"><h2 class="text-xl md:text-2xl font-semibold mb-3">${escapeHtml(title)}</h2><p class="text-gray-500 max-w-2xl mx-auto">最新记录</p></section>` : '';
+  // 列表页仅保留类型标题，移除“最新记录”副文案
+  const header = title ? `<section class="text-center bg-white p-6 md:p-10 rounded-xl shadow-sm mb-12"><h2 class="text-xl md:text-2xl font-semibold mb-0">${escapeHtml(title)}</h2></section>` : '';
   const li = list.map(it => {
     const date = toDateString(it.date);
     const tags = (it.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅迹 - 我的阅读与观影记录</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f9fafb; /* 使用柔和的背景色 */
+        }
+        /* 自定义滚动条，提升细节体验 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+        /* 时间线垂直线的样式 */
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            bottom: 20px;
+            width: 2px;
+            background-color: #e5e7eb;
+            z-index: -1;
+        }
+        /* 移动端时间线垂直线的位置调整 */
+        @media (max-width: 768px) {
+            .timeline-line {
+                left: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- 主容器 -->
+    <div id="app" class="container mx-auto max-w-5xl p-4 md:p-8">
+
+        <!-- 网站头部 -->
+        <header class="flex justify-between items-center mb-8 md:mb-12">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 tracking-wider">阅迹</h1>
+            <nav class="flex space-x-4 md:space-x-6 text-gray-600">
+                <a href="#" class="hover:text-blue-600 transition-colors duration-300">书籍</a>
+                <a href="#" class="hover:text-blue-600 transition-colors duration-300">电影</a>
+            </nav>
+        </header>
+
+        <!-- 首页视图 -->
+        <main id="home-page">
+            <!-- 网站简介 -->
+            <section class="text-center bg-white p-6 md:p-10 rounded-xl shadow-sm mb-12">
+                <h2 class="text-xl md:text-2xl font-semibold mb-3">记录每一次思想的旅行</h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">无论是沉浸于文字的海洋，还是迷失在光影的世界，「阅迹」都能为你珍藏每一份感悟与回忆。下面是我的足迹时间线。</p>
+            </section>
+            
+            <!-- 时间线容器 -->
+            <div id="timeline-container" class="relative">
+                <!-- 垂直线，通过JS动态添加 -->
+            </div>
+        </main>
+
+        <!-- 详情页视图 (默认隐藏) -->
+        <div id="detail-page" class="hidden">
+            <button id="back-button" class="flex items-center space-x-2 text-gray-600 hover:text-blue-600 mb-8 transition-colors duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                <span>返回时间线</span>
+            </button>
+            <div id="detail-content" class="bg-white p-6 md:p-10 rounded-xl shadow-lg animate-fade-in">
+                <!-- 详情内容将通过JS动态填充 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 逻辑 -->
+    <script>
+        // 模拟数据
+        const mockData = [
+            {
+                id: 1,
+                type: 'book',
+                title: '三体',
+                author: '刘慈欣',
+                date: '2024年6月15日',
+                rating: 5,
+                cover: 'https://placehold.co/300x450/34495e/ffffff?text=三体',
+                summary: '一部宏大的科幻史诗，探讨了宇宙社会学和人性的边界。从红岸基地到三体世界，再到黑暗森林法则，构建了一个令人惊叹的宇宙图景。',
+                review: '这本书彻底改变了我对科幻小说的看法。刘慈欣的想象力无与伦比，其哲学思考的深度也令人敬佩。读完之后，仰望星空的感觉都变得不一样了。强烈推荐给每一个对宇宙、文明和未来充满好奇的人。'
+            },
+            {
+                id: 2,
+                type: 'movie',
+                title: '沙丘',
+                author: '丹尼斯·维伦纽瓦',
+                date: '2024年5月28日',
+                rating: 4,
+                cover: 'https://placehold.co/300x450/d35400/ffffff?text=沙丘',
+                summary: '改编自弗兰克·赫伯特的经典科幻小说，讲述了保罗·厄崔迪在危险的沙漠星球厄拉科斯上的成长与冒险。',
+                review: '视觉和听觉的盛宴。导演成功地将原著中宏伟而晦涩的世界观转化为了震撼人心的银幕体验。汉斯·季默的配乐完美地烘托了史诗氛围。虽然故事只讲了一半，但已经足以让人无比期待续集的到来。'
+            },
+            {
+                id: 3,
+                type: 'book',
+                title: '活着',
+                author: '余华',
+                date: '2024年4月12日',
+                rating: 5,
+                cover: 'https://placehold.co/300x450/2c3e50/ffffff?text=活着',
+                summary: '讲述了主人公福贵一生坎坷的命运，以及他在苦难中展现出的惊人忍耐力。',
+                review: '一本让人心碎却又充满力量的书。余华用平实而冷静的笔触，叙述了一个时代的悲剧和一个人的坚韧。读这本书的过程是沉重的，但读完后却能感受到一种超越苦难的生命力。它教会我们，仅仅是“活着”本身，就是一种伟大。'
+            },
+             {
+                id: 4,
+                type: 'movie',
+                title: '瞬息全宇宙',
+                author: '关家永, 丹尼尔·施纳特',
+                date: '2024年3月20日',
+                rating: 5,
+                cover: 'https://placehold.co/300x450/8e44ad/ffffff?text=瞬息全宇宙',
+                summary: '一名中年妇女在多元宇宙中穿梭，拯救世界的故事。',
+                review: '一部充满想象力、情感真挚的电影。它将家庭、哲学和功夫喜剧完美地融合在一起，创造出一种前所未有的观影体验。电影的核心是关于爱、接纳和理解，让人在欢笑和泪水中思考人生的意义。'
+            },
+        ];
+
+        // 获取 DOM 元素
+        const homePage = document.getElementById('home-page');
+        const detailPage = document.getElementById('detail-page');
+        const timelineContainer = document.getElementById('timeline-container');
+        const detailContent = document.getElementById('detail-content');
+        const backButton = document.getElementById('back-button');
+
+        // 图标模板
+        const bookIcon = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+        `;
+        const movieIcon = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+        `;
+
+        // 星级评分模板
+        const starIcon = (filled) => `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ${filled ? 'text-yellow-400' : 'text-gray-300'}" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+            </svg>
+        `;
+        
+        const renderStars = (rating) => {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += starIcon(i <= rating);
+            }
+            return `<div class="flex">${stars}</div>`;
+        };
+
+        // 渲染时间线
+        const renderTimeline = () => {
+            timelineContainer.innerHTML = ''; // 清空
+            // 添加垂直线
+            const line = document.createElement('div');
+            line.className = 'timeline-line';
+            timelineContainer.appendChild(line);
+
+            mockData.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'timeline-item mb-10 ml-4 md:ml-10 pl-8 md:pl-12 relative cursor-pointer group';
+                itemElement.dataset.id = item.id;
+                
+                const iconBgColor = item.type === 'book' ? 'bg-blue-500' : 'bg-red-500';
+
+                itemElement.innerHTML = `
+                    <!-- 时间线上的圆点和图标 -->
+                    <div class="absolute -left-4 top-1 w-8 h-8 rounded-full ${iconBgColor} flex items-center justify-center ring-8 ring-white transition-transform duration-300 group-hover:scale-110">
+                        ${item.type === 'book' ? bookIcon : movieIcon}
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-md transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6">
+                        <img src="${item.cover}" alt="${item.title}" class="w-24 md:w-28 rounded-md shadow-lg object-cover flex-shrink-0">
+                        <div class="flex-grow">
+                            <p class="text-sm text-gray-500 mb-1">${item.date}</p>
+                            <h3 class="text-xl font-bold mb-2">${item.title}</h3>
+                            <p class="text-md text-gray-600 mb-3">作者: ${item.author}</p>
+                            <p class="text-sm text-gray-500 italic hidden md:block">"${item.summary.substring(0, 50)}..."</p>
+                        </div>
+                        <div class="flex-shrink-0 self-start md:self-center">
+                            ${renderStars(item.rating)}
+                        </div>
+                    </div>
+                `;
+                timelineContainer.appendChild(itemElement);
+            });
+        };
+        
+        // 渲染详情页
+        const renderDetail = (id) => {
+            const item = mockData.find(d => d.id == id);
+            if (!item) return;
+
+            const typeLabel = item.type === 'book' ? '书籍' : '电影';
+            const authorLabel = item.type === 'book' ? '作者' : '导演';
+
+            detailContent.innerHTML = `
+                <div class="flex flex-col md:flex-row md:space-x-10">
+                    <div class="w-full md:w-1/3 flex-shrink-0 mb-6 md:mb-0">
+                        <img src="${item.cover}" alt="${item.title}" class="w-full rounded-lg shadow-2xl object-cover">
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <span class="inline-block bg-gray-200 text-gray-700 text-xs font-semibold px-3 py-1 rounded-full mb-3">${typeLabel}</span>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-3">${item.title}</h2>
+                        <p class="text-lg text-gray-600 mb-4">${authorLabel}: ${item.author}</p>
+                        <div class="mb-6">
+                            ${renderStars(item.rating)}
+                        </div>
+                        <div class="space-y-4 text-gray-700 leading-relaxed">
+                            <div class="prose max-w-none">
+                                <h4 class="font-semibold text-gray-800">简介</h4>
+                                <p>${item.summary}</p>
+                                <h4 class="font-semibold text-gray-800 mt-4">我的想法</h4>
+                                <p>${item.review}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // 切换视图
+            homePage.classList.add('hidden');
+            detailPage.classList.remove('hidden');
+            window.scrollTo(0, 0); // 切换后滚动到页面顶部
+        };
+
+        // 事件监听
+        timelineContainer.addEventListener('click', (e) => {
+            const itemElement = e.target.closest('.timeline-item');
+            if (itemElement) {
+                const id = itemElement.dataset.id;
+                renderDetail(id);
+            }
+        });
+
+        backButton.addEventListener('click', () => {
+            detailPage.classList.add('hidden');
+            homePage.classList.remove('hidden');
+            window.scrollTo(0, 0);
+        });
+
+        // 初始渲染
+        document.addEventListener('DOMContentLoaded', renderTimeline);
+    </script>
+</body>
+</html>
